@@ -126,5 +126,10 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="data\data.txt" />
+    <Content Include="data\текстовый файл дааные 2.txt" />
+    <Content Include="data\текстовый файл данные 1.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

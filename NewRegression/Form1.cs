@@ -168,9 +168,9 @@ namespace NewRegression
                 double p1 = -a[1] * Math.Pow((x1[i] - a[2]),2);
                 double p2 = -a[4] * Math.Pow((x1[i] - a[5]),2);
                 Ysh2[i] = ( (-2) * (a[0] * a[1] * Math.Exp(p1))) +
-                    (4 * a[0] * a[1] * Math.Pow((x1[i] - a[2]),2) * Math.Exp(p1)) -
+                    (4 * a[0] * Math.Pow(a[1],2) * Math.Pow((x1[i] - a[2]),2) * Math.Exp(p1)) -
                     (2 * (a[3] * a[4] * Math.Exp(p2))) +
-                    (4 * a[3] * a[4] * Math.Pow((x1[i] - a[5]), 2) * Math.Exp(p2));
+                    (4 * a[3] * Math.Pow(a[4],2) * Math.Pow((x1[i] - a[5]), 2) * Math.Exp(p2));
             }
 
 
