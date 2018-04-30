@@ -20,18 +20,22 @@ namespace NewRegression
         double[] k1 = new double[n_max];
         double[] k2 = new double[n_max];
         double[] p = new double[6];     //массив параметров
+        double[] Ysh = new double[n_max];
+        double[] Ysh2 = new double[n_max];
         int[] extr = new int[4];  //массив точек, подозрительных на экстремум функции
-        double eps, eps1, h, h1, d;     // точность, шаг, абсолютное значение шага
+        double eps, eps1, h, h1, d, IPS, T3, IPR, T5, maf, F30;     // точность, шаг, абсолютное значение шага
         int k;                         //кол-во итераций
         public Form1()
         {
             InitializeComponent();
             dataGridView1.RowCount = 1;    //задаем кол-во строк и столбцов каждой таблицы на форме
-            dataGridView1.ColumnCount = 5;
-            String[] st = { "N п/п", "X", "Y", "F(x)", "(Y-F(x))^2" }; //заголовки столбцов для исходной таблицы
-            for (int i = 0; i < 5; i++)
+            dataGridView1.ColumnCount = 7;
+            String[] st = { "N п/п", "X", "Y", "F(x)", "(Y-F(x))^2", "F'", "F''" }; //заголовки столбцов для исходной таблицы
+            for (int i = 0; i < 7; i++)
                 dataGridView1.Rows[0].Cells[i].Value = st[i];
             openFileDialog1.Filter = "Text files(*.txt)|*.txt"; //в диалоге открытия файла устанавливаем фильтр только для отображения текстовых файлов
+            chart1.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
+
         }
 
         private void btnLoad_Click(object sender, EventArgs e) //загрузка данных выборки из файла
@@ -52,6 +56,8 @@ namespace NewRegression
 
             chart1.Series[0].Points.Clear();  //очистка графика от предыдущих расчетов
             chart1.Series[1].Points.Clear();
+            chart1.Series[2].Points.Clear();
+            chart1.Series[3].Points.Clear();
             for (int i = 0; i < n; i++)
             {
                 x[i] = Convert.ToDouble(dataGridView1.Rows[i + 1].Cells[1].Value.ToString());
@@ -138,85 +144,185 @@ namespace NewRegression
             return T2;
         }
 
-        private void btnCalc_Click(object sender, EventArgs e)
+        public double[] fsh(double[] x1, double[] a)      // расчет массива значений аппроксимирующей функции
+        {
+            //double[] Ysh = new double[n];
+            for (int i = 0; i < n; i++)
             {
-                double[] kv = new double[n]; //массив квадратичных отклонений
-                double[] kv1 = new double[n];
-                double[] kv2 = new double[n];
-                //начальное приближение
-                p[0] = Convert.ToDouble(textBox7.Text.Trim());
-                p[1] = Convert.ToDouble(textBox8.Text.Trim());
-                p[2] = Convert.ToDouble(textBox9.Text.Trim());
-                p[3] = Convert.ToDouble(textBox10.Text.Trim());
-                p[4] = Convert.ToDouble(textBox11.Text.Trim());
-                p[5] = Convert.ToDouble(textBox12.Text.Trim());
-                //расчет методом покоординатного спуска
-                eps = 0.001; //погрешность
-                h = 0.005; //шаг поиска - начальное значение
-                k = 50; //кол-во итераций
-                eps1 = eps / k;
-                do
-                {
-                    d = Math.Abs(h);
-                    for (int i = 0; i < 6; i++)
-                    {
-                        h1 = h;
-                        scan(i);
-                    }
-                    h = h / k;
-                }
-                while (d > eps);
-
-                y1 = f(x, p);
-                for (int i = 0; i < n; i++)
-                    kv[i] = (y[i] - y1[i]) * (y[i] - y1[i]);
-                k1 = Fk1(x, p);
-                for (int i = 0; i < n; i++)
-                    kv1[i] = (y[i] - k1[i]) * (y[i] - k1[i]);
-                k2 = Fk2(x, p);
-                for (int i = 0; i < n; i++)
-                    kv2[i] = (y[i] - k2[i]) * (y[i] - k2[i]);
-
-
-                //вывод расчетных коэф-тов функции
-                textBox1.Text = p[0].ToString("F6");
-                textBox2.Text = p[1].ToString("F6");
-                textBox3.Text = p[2].ToString("F6");
-                textBox4.Text = p[3].ToString("F6");
-                textBox5.Text = p[4].ToString("F6");
-                textBox6.Text = p[5].ToString("F6");
-                //вывод расчетных значений функции и квадр.отклонений
-                chart1.Series[1].Points.Clear();
-                chart1.Series[2].Points.Clear();
-                chart1.Series[3].Points.Clear();
-                for (int i = 0; i < n; i++)
-                {
-                    dataGridView1.Rows[i + 1].Cells[3].Value = y1[i].ToString("F6");
-                    dataGridView1.Rows[i + 1].Cells[4].Value = kv[i].ToString("F6");
-                    //вывод графиков экспериментальных и аппроксимирующих значений функции
-                    chart1.Series[1].Points.AddXY(x[i], y1[i]);
-                    chart1.Series[2].Points.AddXY(x[i], k1[i]);
-                    chart1.Series[3].Points.AddXY(x[i], k2[i]);
-                }
-                textBox13.Text = f_o().ToString("F6"); //вывод суммы квадратов отклонений
-                double kv_err = Math.Sqrt(f_o()) / n;  //расчет среднекв. ошибки
-                textBox14.Text = kv_err.ToString("F6");
-                textBox18.Visible = true; label19.Visible = true;
-                textBox17.Visible = true; label18.Visible = true;
-                textBox16.Visible = true; label17.Visible = true;
-                textBox15.Visible = true; label16.Visible = true;
-                //вывод максимумов
-                double xm = p[2];
-                double ym = p[0] * Math.Exp(-p[1] * (xm - p[2]) * (xm - p[2])) + p[3] * Math.Exp(-p[4] * (xm - p[5]) * (xm - p[5]));
-                textBox15.Text = xm.ToString("F3");
-                textBox16.Text = ym.ToString("F6");
-                xm = p[5];
-                ym = p[0] * Math.Exp(-p[1] * (xm - p[2]) * (xm - p[2])) + p[3] * Math.Exp(-p[4] * (xm - p[5]) * (xm - p[5]));
-                textBox17.Text = xm.ToString("F3");
-                textBox18.Text = ym.ToString("F6");
+                double p1 = -a[1] * ((x1[i] - a[2]) * (x1[i] - a[2]));
+                //double p1 = (-a[1] * (x[i] - a[2]) ) * (-a[1] * (x[i] - a[2]));
+                double p2 = -a[4] * ((x1[i] - a[5]) * (x1[i] - a[5]));
+                Ysh[i] = (-2) * (a[0] * a[1] * (x1[i] - a[2])) * Math.Exp(p1) - (2 * a[3] * a[4] * (x1[i] - a[5]) * Math.Exp(p2));
+                //Ysh[i] = (-2) * (a[0] *a[1] * (x1[i] -a[2]) * Math.Exp(a[1] * ((x1[i] -a[2]) * (x1[i] - a[2]))))+(-2) * (a[3] * a[4] * (x1[i] -a[5]) * Math.Exp(a[4] * ((x1[i] -a[5]) * (x1[i] -a[5]))));
             }
 
-            public double f_o()// вычисление суммы отклонений - целевая функция
+
+
+            return Ysh;
+        }
+
+        public double[] fsh2(double[] x1, double[] a)      // расчет массива значений аппроксимирующей функции
+        {
+            for (int i = 0; i < n; i++)
+            {
+                double p1 = -a[1] * Math.Pow((x1[i] - a[2]),2);
+                double p2 = -a[4] * Math.Pow((x1[i] - a[5]),2);
+                Ysh2[i] = ( (-2) * (a[0] * a[1] * Math.Exp(p1))) +
+                    (4 * a[0] * a[1] * Math.Pow((x1[i] - a[2]),2) * Math.Exp(p1)) -
+                    (2 * (a[3] * a[4] * Math.Exp(p2))) +
+                    (4 * a[3] * a[4] * Math.Pow((x1[i] - a[5]), 2) * Math.Exp(p2));
+            }
+
+
+
+            return Ysh2;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            p[0] = Convert.ToDouble(textBox1.Text.Trim());
+            p[1] = Convert.ToDouble(textBox2.Text.Trim());
+            p[2] = Convert.ToDouble(textBox3.Text.Trim());
+            p[3] = Convert.ToDouble(textBox4.Text.Trim());
+            p[4] = Convert.ToDouble(textBox5.Text.Trim());
+            p[5] = Convert.ToDouble(textBox6.Text.Trim());
+            chart1.Series[0].Enabled = false;
+            chart1.Series[2].Enabled = false;
+            chart1.Series[3].Enabled = false;
+            /*double xm = p[2];
+            double ym = (-2) * (p[0] * p[1] * (xm - p[2])) * Math.Exp(-p[1] * ((xm - p[2]) * (xm - p[2]))) - (2 * p[3] * p[4] * (xm - p[5]) * Math.Exp(-p[4] * ((xm - p[5]) * (xm - p[5]))));
+            textBox20.Text = xm.ToString("F3");
+            textBox21.Text = ym.ToString("F6");
+            xm = p[5];
+            ym = (-2) * (p[0] * p[1] * (xm - p[2])) * Math.Exp(-p[1] * ((xm - p[2]) * (xm - p[2]))) - (2 * p[3] * p[4] * (xm - p[5]) * Math.Exp(-p[4] * ((xm - p[5]) * (xm - p[5]))));
+            textBox22.Text = xm.ToString("F3");
+            textBox23.Text = ym.ToString("F6");*/
+
+        }
+
+        private void btnCalc_Click(object sender, EventArgs e)
+        {
+            double[] kv = new double[n]; //массив квадратичных отклонений
+            double[] kv1 = new double[n];
+            double[] kv2 = new double[n];
+            //начальное приближение
+            p[0] = Convert.ToDouble(textBox7.Text.Trim());
+            p[1] = Convert.ToDouble(textBox8.Text.Trim());
+            p[2] = Convert.ToDouble(textBox9.Text.Trim());
+            p[3] = Convert.ToDouble(textBox10.Text.Trim());
+            p[4] = Convert.ToDouble(textBox11.Text.Trim());
+            p[5] = Convert.ToDouble(textBox12.Text.Trim());
+            //расчет методом покоординатного спуска
+            eps = 0.001; //погрешность
+            h = 0.005; //шаг поиска - начальное значение
+            k = 50; //кол-во итераций
+            eps1 = eps / k;
+            do
+            {
+                d = Math.Abs(h);
+                for (int i = 0; i < 6; i++)
+                {
+                    h1 = h;
+                    scan(i);
+                }
+                h = h / k;
+            }
+            while (d > eps);
+
+            y1 = f(x, p);
+            for (int i = 0; i < n; i++)
+                kv[i] = (y[i] - y1[i]) * (y[i] - y1[i]);
+            k1 = Fk1(x, p);
+            for (int i = 0; i < n; i++)
+                kv1[i] = (y[i] - k1[i]) * (y[i] - k1[i]);
+            k2 = Fk2(x, p);
+            for (int i = 0; i < n; i++)
+                kv2[i] = (y[i] - k2[i]) * (y[i] - k2[i]);
+
+
+            //вывод расчетных коэф-тов функции
+            textBox1.Text = p[0].ToString("F6");
+            textBox2.Text = p[1].ToString("F6");
+            textBox3.Text = p[2].ToString("F6");
+            textBox4.Text = p[3].ToString("F6");
+            textBox5.Text = p[4].ToString("F6");
+            textBox6.Text = p[5].ToString("F6");
+
+            Ysh = fsh(x, p);
+            Ysh2 = fsh2(x, p);
+            //вывод расчетных значений функции и квадр.отклонений
+            chart1.Series[1].Points.Clear();
+            chart1.Series[2].Points.Clear();
+            chart1.Series[3].Points.Clear();
+            chart1.Series[4].Points.Clear();
+            chart1.Series[5].Points.Clear();
+            for (int i = 0; i < n; i++)
+            {
+                dataGridView1.Rows[i + 1].Cells[3].Value = y1[i].ToString("F6");
+                dataGridView1.Rows[i + 1].Cells[4].Value = kv[i].ToString("F6");
+                dataGridView1.Rows[i + 1].Cells[5].Value = Ysh[i].ToString("F6");
+                dataGridView1.Rows[i + 1].Cells[6].Value = Ysh2[i].ToString("F6");
+                //вывод графиков экспериментальных и аппроксимирующих значений функции
+                chart1.Series[1].Points.AddXY(x[i], y1[i]);
+                chart1.Series[2].Points.AddXY(x[i], k1[i]);
+                chart1.Series[3].Points.AddXY(x[i], k2[i]);
+                chart1.Series[4].Points.AddXY(x[i], Ysh[i]);
+                chart1.Series[5].Points.AddXY(x[i], Ysh2[i]);
+            }
+            textBox13.Text = f_o().ToString("F6"); //вывод суммы квадратов отклонений
+            double kv_err = Math.Sqrt(f_o()) / n;  //расчет среднекв. ошибки
+            textBox14.Text = kv_err.ToString("F6");
+            textBox18.Visible = true; label19.Visible = true;
+            textBox17.Visible = true; label18.Visible = true;
+            textBox16.Visible = true; label17.Visible = true;
+            textBox15.Visible = true; label16.Visible = true;
+            //вывод максимумов
+            double xm = p[2];
+            double ym = p[0] * Math.Exp(-p[1] * (xm - p[2]) * (xm - p[2])) + p[3] * Math.Exp(-p[4] * (xm - p[5]) * (xm - p[5]));
+            textBox15.Text = xm.ToString("F3");
+            textBox16.Text = ym.ToString("F6");
+            xm = p[5];
+            ym = p[0] * Math.Exp(-p[1] * (xm - p[2]) * (xm - p[2])) + p[3] * Math.Exp(-p[4] * (xm - p[5]) * (xm - p[5]));
+            textBox17.Text = xm.ToString("F3");
+            textBox18.Text = ym.ToString("F6");
+
+            textBox21.Text = Ysh.Max().ToString();
+            int max = Array.IndexOf(Ysh, Ysh.Max());
+            textBox20.Text = x.GetValue(max).ToString();
+
+            textBox23.Text = Ysh.Min().ToString();
+            int min = Array.IndexOf(Ysh, Ysh.Min());
+            textBox22.Text = x.GetValue(min).ToString();
+
+            T3 = Convert.ToDouble(y1.GetValue(max));
+            T5 = Convert.ToDouble(y1.GetValue(min));
+
+            double max1 = Convert.ToDouble(Ysh.GetValue(max));
+            double min1 = Convert.ToDouble(Ysh.GetValue(min));
+
+            double div = Ysh.Min() / Ysh.Max();
+
+            IPS = max1 / T3;
+            IPR = Math.Abs(min1 / T5);
+
+            textBox24.Text = IPS.ToString();
+            textBox25.Text = IPR.ToString();
+            textBox26.Text = Math.Abs(div).ToString();
+
+            double m1 = Convert.ToDouble(textBox16.Text.Trim());
+            double m2 = Convert.ToDouble(textBox18.Text.Trim());
+
+            if (m1 > m2)
+                maf = m1;
+            else
+                maf = m2;
+            //double T3 = max1 / test;
+
+            F30 = maf * 0.3;
+            textBox27.Text = F30.ToString();
+        }
+
+        public double f_o()// вычисление суммы отклонений - целевая функция
         {
             double sum = 0;
             for (int i = 0; i < n; i++)
@@ -241,7 +347,7 @@ namespace NewRegression
             }
             while (a == false && d1 > eps1);
         }
-        
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -251,6 +357,36 @@ namespace NewRegression
             textBox10.Text = "";
             textBox11.Text = "";
             textBox12.Text = "";
+        }
+
+
+        private void chart1_MouseWheel(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                if (e.Delta < 0)
+                {
+                    chart1.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                    chart1.ChartAreas[0].AxisY.ScaleView.ZoomReset();
+                }
+
+                if (e.Delta > 0)
+                {
+                    double xMin = chart1.ChartAreas[0].AxisX.ScaleView.ViewMinimum;
+                    double xMax = chart1.ChartAreas[0].AxisX.ScaleView.ViewMaximum;
+                    double yMin = chart1.ChartAreas[0].AxisY.ScaleView.ViewMinimum;
+                    double yMax = chart1.ChartAreas[0].AxisY.ScaleView.ViewMaximum;
+
+                    double posXStart = chart1.ChartAreas[0].AxisX.PixelPositionToValue(e.Location.X) - (xMax - xMin) / 4;
+                    double posXFinish = chart1.ChartAreas[0].AxisX.PixelPositionToValue(e.Location.X) + (xMax - xMin) / 4;
+                    double posYStart = chart1.ChartAreas[0].AxisY.PixelPositionToValue(e.Location.Y) - (yMax - yMin) / 4;
+                    double posYFinish = chart1.ChartAreas[0].AxisY.PixelPositionToValue(e.Location.Y) + (yMax - yMin) / 4;
+
+                    chart1.ChartAreas[0].AxisX.ScaleView.Zoom(posXStart, posXFinish);
+                    chart1.ChartAreas[0].AxisY.ScaleView.Zoom(posYStart, posYFinish);
+                }
+            }
+            catch { }
         }
     }
 }
