@@ -102,6 +102,16 @@
             this.textBox27 = new System.Windows.Forms.TextBox();
             this.label26 = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
+            this.label34 = new System.Windows.Forms.Label();
+            this.label35 = new System.Windows.Forms.Label();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -109,6 +119,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -189,7 +200,7 @@
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Location = new System.Drawing.Point(535, 136);
+            this.groupBox1.Location = new System.Drawing.Point(448, 136);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(123, 183);
             this.groupBox1.TabIndex = 7;
@@ -358,7 +369,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(532, 324);
+            this.label14.Location = new System.Drawing.Point(452, 324);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(127, 13);
             this.label14.TabIndex = 9;
@@ -367,7 +378,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(532, 366);
+            this.label15.Location = new System.Drawing.Point(452, 366);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(100, 13);
             this.label15.TabIndex = 10;
@@ -375,14 +386,14 @@
             // 
             // textBox13
             // 
-            this.textBox13.Location = new System.Drawing.Point(535, 343);
+            this.textBox13.Location = new System.Drawing.Point(455, 343);
             this.textBox13.Name = "textBox13";
             this.textBox13.Size = new System.Drawing.Size(111, 20);
             this.textBox13.TabIndex = 11;
             // 
             // textBox14
             // 
-            this.textBox14.Location = new System.Drawing.Point(535, 382);
+            this.textBox14.Location = new System.Drawing.Point(455, 382);
             this.textBox14.Name = "textBox14";
             this.textBox14.Size = new System.Drawing.Size(111, 20);
             this.textBox14.TabIndex = 12;
@@ -494,7 +505,7 @@
             this.chart1.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(665, 13);
+            this.chart1.Location = new System.Drawing.Point(712, 12);
             this.chart1.Name = "chart1";
             series1.BorderWidth = 3;
             series1.ChartArea = "ChartArea1";
@@ -544,13 +555,14 @@
             this.chart1.Series.Add(series4);
             this.chart1.Series.Add(series5);
             this.chart1.Series.Add(series6);
-            this.chart1.Size = new System.Drawing.Size(833, 862);
+            this.chart1.Size = new System.Drawing.Size(786, 863);
             this.chart1.TabIndex = 16;
             this.chart1.Text = "chart1";
             title1.ForeColor = System.Drawing.Color.Navy;
             title1.Name = "Title1";
             title1.Text = "Графики экспериментальной и аппроксимирующей функций";
             this.chart1.Titles.Add(title1);
+            this.chart1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseMove);
             this.chart1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseWheel);
             // 
             // btnLoad
@@ -583,11 +595,11 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(506, 408);
+            this.button1.Location = new System.Drawing.Point(584, 327);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(148, 51);
+            this.button1.Size = new System.Drawing.Size(116, 36);
             this.button1.TabIndex = 19;
-            this.button1.Text = "Убрать лишнее";
+            this.button1.Text = "Блок статистики";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -753,11 +765,134 @@
             this.label27.TabIndex = 15;
             this.label27.Text = "ИПР=";
             // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Location = new System.Drawing.Point(1001, 56);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(0, 13);
+            this.label34.TabIndex = 24;
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(1324, 35);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(0, 13);
+            this.label35.TabIndex = 25;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.checkBox6);
+            this.groupBox6.Controls.Add(this.checkBox5);
+            this.groupBox6.Controls.Add(this.checkBox4);
+            this.groupBox6.Controls.Add(this.checkBox3);
+            this.groupBox6.Controls.Add(this.checkBox2);
+            this.groupBox6.Controls.Add(this.checkBox1);
+            this.groupBox6.Location = new System.Drawing.Point(577, 138);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(123, 183);
+            this.groupBox6.TabIndex = 14;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Коэффициенты";
+            // 
+            // checkBox6
+            // 
+            this.checkBox6.AutoSize = true;
+            this.checkBox6.Checked = true;
+            this.checkBox6.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox6.Location = new System.Drawing.Point(7, 134);
+            this.checkBox6.Name = "checkBox6";
+            this.checkBox6.Size = new System.Drawing.Size(101, 17);
+            this.checkBox6.TabIndex = 5;
+            this.checkBox6.Text = "2 производная";
+            this.checkBox6.UseVisualStyleBackColor = true;
+            this.checkBox6.CheckedChanged += new System.EventHandler(this.checkBox6_CheckedChanged);
+            // 
+            // checkBox5
+            // 
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.Checked = true;
+            this.checkBox5.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox5.Location = new System.Drawing.Point(7, 111);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(101, 17);
+            this.checkBox5.TabIndex = 4;
+            this.checkBox5.Text = "1 производная";
+            this.checkBox5.UseVisualStyleBackColor = true;
+            this.checkBox5.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Checked = true;
+            this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox4.Location = new System.Drawing.Point(7, 88);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(96, 17);
+            this.checkBox4.TabIndex = 3;
+            this.checkBox4.Text = "2 компонента";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Checked = true;
+            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox3.Location = new System.Drawing.Point(7, 65);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(96, 17);
+            this.checkBox3.TabIndex = 2;
+            this.checkBox3.Text = "1 компонента";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Checked = true;
+            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox2.Location = new System.Drawing.Point(7, 42);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(113, 17);
+            this.checkBox2.TabIndex = 1;
+            this.checkBox2.Text = "Рассчётные знач";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(7, 19);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(106, 17);
+            this.checkBox1.TabIndex = 0;
+            this.checkBox1.Text = "Экспереминтал";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(584, 369);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(116, 36);
+            this.button2.TabIndex = 26;
+            this.button2.Text = "Показать график";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1510, 887);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.groupBox6);
+            this.Controls.Add(this.label35);
+            this.Controls.Add(this.label34);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.button1);
@@ -788,6 +923,8 @@
             this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -860,6 +997,16 @@
         private System.Windows.Forms.TextBox textBox27;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.CheckBox checkBox6;
+        private System.Windows.Forms.CheckBox checkBox5;
+        private System.Windows.Forms.CheckBox checkBox4;
+        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button2;
     }
 }
 
